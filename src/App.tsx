@@ -12,7 +12,10 @@ import {
   Building2,
   MoreVertical,
   CreditCard,
-  ChevronRight
+  ChevronRight,
+  Search,
+  LifeBuoy,
+  X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
@@ -256,8 +259,20 @@ const HomeView = () => (
 export default function App() {
   const [activeTab, setActiveTab] = useState('Home');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isDelegatesModalOpen, setIsDelegatesModalOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const [profilePic, setProfilePic] = useState('https://picsum.photos/seed/tuxedo-cat-illustration/100/100');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const MOCK_DELEGATES = [
+    { name: 'Alice Johnson', email: 'alice.j@google.com', role: 'Primary Delegate' },
+    { name: 'Bob Smith', email: 'bob.s@google.com', role: 'Travel Coordinator' },
+    { name: 'Charlie Davis', email: 'charlie.d@google.com', role: 'Expense Approver' },
+    { name: 'Diana Prince', email: 'diana.p@google.com', role: 'Delegate' },
+    { name: 'Ethan Hunt', email: 'ethan.h@google.com', role: 'Delegate' },
+    { name: 'Fiona Gallagher', email: 'fiona.g@google.com', role: 'Delegate' },
+  ];
 
   const handleProfilePicClick = () => {
     fileInputRef.current?.click();
@@ -277,6 +292,12 @@ export default function App() {
   const handleTabClick = (tab: string) => {
     if (tab === 'Create') {
       setIsCreateModalOpen(true);
+    } else if (tab === 'Delegates') {
+      setIsDelegatesModalOpen(true);
+    } else if (tab === 'Help') {
+      setIsHelpModalOpen(true);
+    } else if (tab === 'Privacy') {
+      setIsPrivacyModalOpen(true);
     } else {
       setActiveTab(tab);
     }
@@ -508,6 +529,289 @@ export default function App() {
                   >
                     Create Trip
                   </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+        {/* Delegates Modal */}
+        <AnimatePresence>
+          {isDelegatesModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsDelegatesModalOpen(false)}
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              />
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-8"
+              >
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900">My Delegates</h3>
+                  <button 
+                    onClick={() => setIsDelegatesModalOpen(false)}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <PlusCircle className="rotate-45" size={24} />
+                  </button>
+                </div>
+                
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200">
+                  {MOCK_DELEGATES.map((delegate, index) => (
+                    <motion.div 
+                      key={index}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                        {delegate.name.charAt(0)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-gray-900 truncate">{delegate.name}</p>
+                        <p className="text-xs text-gray-500 truncate">{delegate.email}</p>
+                      </div>
+                      <span className="text-[10px] font-bold px-2 py-1 bg-gray-100 text-gray-600 rounded-full uppercase">
+                        {delegate.role}
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="mt-8">
+                  <button 
+                    onClick={() => setIsDelegatesModalOpen(false)}
+                    className="w-full px-4 py-3 bg-gray-900 text-white font-semibold rounded-xl hover:bg-gray-800 transition-all active:scale-95 shadow-lg"
+                  >
+                    Close
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+        {/* Help Modal */}
+        <AnimatePresence>
+          {isHelpModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsHelpModalOpen(false)}
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              />
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
+              >
+                {/* Header */}
+                <div className="flex justify-between items-center p-6 border-b border-gray-100">
+                  <h3 className="text-2xl font-normal text-gray-800 w-full text-center">Help</h3>
+                  <button 
+                    onClick={() => setIsHelpModalOpen(false)}
+                    className="absolute right-6 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+
+                <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
+                  {/* Popular Resources */}
+                  <div>
+                    <h4 className="text-base font-bold text-gray-900 mb-4">Popular help resources</h4>
+                    <div className="space-y-4">
+                      {[
+                        "Business-related home internet",
+                        "go/travelperks | Perks with Google's Preferred Suppliers",
+                        "Expense types & thresholds",
+                        "Gcard for business expenses",
+                        "2025 Year-end expense deadlines"
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-4 group cursor-pointer">
+                          <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0 group-hover:bg-blue-100 transition-colors">
+                            <FileText size={20} />
+                          </div>
+                          <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors leading-tight">
+                            {item}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Search Bar */}
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                      <Search size={20} className="text-gray-400" />
+                    </div>
+                    <input 
+                      type="text" 
+                      placeholder="Search Help" 
+                      className="w-full pl-12 pr-4 py-3 bg-gray-100 border-transparent rounded-full text-sm focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    />
+                  </div>
+
+                  {/* Need More Help */}
+                  <div className="pt-4 border-t border-gray-100">
+                    <h4 className="text-base font-bold text-gray-900 mb-4">Need more help?</h4>
+                    <div className="flex items-start gap-4 group cursor-pointer p-2 -mx-2 rounded-xl hover:bg-gray-50 transition-colors">
+                      <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0 group-hover:bg-blue-100 transition-colors">
+                        <LifeBuoy size={20} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-gray-900">Contact us</p>
+                        <p className="text-xs text-gray-500">Tell us more and we'll help you get there</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+        {/* Privacy Modal */}
+        <AnimatePresence>
+          {isPrivacyModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-10">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsPrivacyModalOpen(false)}
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              />
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.98, y: 10 }}
+                className="relative w-full h-full max-w-6xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between px-8 py-4 border-b border-gray-100 bg-white z-10">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-semibold text-gray-800">
+                      <span className="text-blue-500">G</span>
+                      <span className="text-red-500">o</span>
+                      <span className="text-yellow-500">o</span>
+                      <span className="text-blue-500">g</span>
+                      <span className="text-green-500">l</span>
+                      <span className="text-red-500">e</span>
+                    </span>
+                    <span className="text-xl text-gray-600 ml-1">Privacy & Terms</span>
+                  </div>
+                  <button 
+                    onClick={() => setIsPrivacyModalOpen(false)}
+                    className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+
+                {/* Tabs */}
+                <div className="px-8 border-b border-gray-100 bg-white z-10">
+                  <div className="flex gap-8">
+                    {['Overview', 'Privacy Policy', 'Terms of Service', 'Technologies', 'FAQ'].map((tab) => (
+                      <button 
+                        key={tab}
+                        className={cn(
+                          "py-4 text-sm font-medium border-b-2 transition-all",
+                          tab === 'Privacy Policy' 
+                            ? "border-blue-600 text-blue-600" 
+                            : "border-transparent text-gray-500 hover:text-gray-800"
+                        )}
+                      >
+                        {tab}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Content Area */}
+                <div className="flex-1 flex overflow-hidden">
+                  {/* Sidebar within modal */}
+                  <div className="w-72 border-r border-gray-100 overflow-y-auto p-6 bg-gray-50/30">
+                    <div className="space-y-1">
+                      {[
+                        "Introduction",
+                        "Information Google collects",
+                        "Why Google collects data",
+                        "Your privacy controls",
+                        "Sharing your information",
+                        "Keeping your information secure",
+                        "Exporting & deleting your information",
+                        "Retaining your information",
+                        "Compliance & cooperation with regulators",
+                        "About this policy",
+                        "Related privacy practices",
+                        "Data transfer frameworks"
+                      ].map((item) => (
+                        <button 
+                          key={item}
+                          className={cn(
+                            "w-full text-left px-4 py-2.5 text-sm rounded-lg transition-colors",
+                            item === 'Introduction' 
+                              ? "text-blue-600 font-medium bg-blue-50/50" 
+                              : "text-gray-600 hover:bg-gray-100"
+                          )}
+                        >
+                          {item}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Main content within modal */}
+                  <div className="flex-1 overflow-y-auto p-12 bg-white">
+                    <div className="max-w-3xl mx-auto">
+                      <div className="flex justify-center mb-12">
+                        <div className="relative w-64 h-64">
+                          {/* Simulated Illustration */}
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="relative">
+                              <div className="w-32 h-40 bg-blue-600 rounded-xl shadow-xl flex items-center justify-center transform -rotate-6">
+                                <span className="text-white text-6xl font-bold">G</span>
+                              </div>
+                              <div className="absolute -top-4 -right-4 w-12 h-12 bg-red-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                                <ShieldCheck size={24} className="text-white" />
+                              </div>
+                              <div className="absolute -bottom-6 -left-8 w-24 h-24 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 transform rotate-12">
+                                <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
+                                  <Search size={24} className="text-gray-400" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-8">
+                        <div>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">GOOGLE PRIVACY POLICY</p>
+                          <h2 className="text-4xl font-normal text-gray-900 leading-tight mb-6">
+                            When you use our services, you’re trusting us with your information.
+                          </h2>
+                          <p className="text-xl text-gray-600 leading-relaxed">
+                            We understand this is a big responsibility and work hard to protect your information and put you in control.
+                          </p>
+                        </div>
+
+                        <div className="pt-8 border-t border-gray-100">
+                          <p className="text-gray-600 leading-relaxed">
+                            This Privacy Policy is meant to help you understand what information we collect, why we collect it, and how you can update, manage, export, and delete your information.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             </div>
