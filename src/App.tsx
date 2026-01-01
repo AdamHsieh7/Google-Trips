@@ -270,7 +270,7 @@ export default function App() {
     { name: 'Zhang Wei', email: 'zhang.w@google.com', role: 'Travel Coordinator' },
     { name: 'Priya Sharma', email: 'priya.s@google.com', role: 'Primary Delegate' },
     { name: 'James Wilson', email: 'james.w@google.com', role: 'Delegate' },
-    { name: 'Rajesh Kumar', email: 'rajesh.k@google.com', role: 'Expense Approver' },
+    { name: 'Deepak Nayak', email: 'deepaknayak@google.com', role: 'Expense Approver' },
     { name: 'Li Na', email: 'li.n@google.com', role: 'Delegate' },
     { name: 'Amit Patel', email: 'amit.p@google.com', role: 'Delegate' },
     { name: 'Sarah Miller', email: 'sarah.m@google.com', role: 'Delegate' },
