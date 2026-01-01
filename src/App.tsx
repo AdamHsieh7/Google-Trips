@@ -267,12 +267,16 @@ export default function App() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const MOCK_DELEGATES = [
-    { name: 'Alice Johnson', email: 'alice.j@google.com', role: 'Primary Delegate' },
-    { name: 'Bob Smith', email: 'bob.s@google.com', role: 'Travel Coordinator' },
-    { name: 'Charlie Davis', email: 'charlie.d@google.com', role: 'Expense Approver' },
-    { name: 'Diana Prince', email: 'diana.p@google.com', role: 'Delegate' },
-    { name: 'Ethan Hunt', email: 'ethan.h@google.com', role: 'Delegate' },
-    { name: 'Fiona Gallagher', email: 'fiona.g@google.com', role: 'Delegate' },
+    { name: 'Zhang Wei', email: 'zhang.w@google.com', role: 'Travel Coordinator' },
+    { name: 'Priya Sharma', email: 'priya.s@google.com', role: 'Primary Delegate' },
+    { name: 'James Wilson', email: 'james.w@google.com', role: 'Delegate' },
+    { name: 'Rajesh Kumar', email: 'rajesh.k@google.com', role: 'Expense Approver' },
+    { name: 'Li Na', email: 'li.n@google.com', role: 'Delegate' },
+    { name: 'Amit Patel', email: 'amit.p@google.com', role: 'Delegate' },
+    { name: 'Sarah Miller', email: 'sarah.m@google.com', role: 'Delegate' },
+    { name: 'Sanjay Gupta', email: 'sanjay.g@google.com', role: 'Delegate' },
+    { name: 'Wei Chen', email: 'wei.c@google.com', role: 'Delegate' },
+    { name: 'Vikram Singh', email: 'vikram.s@google.com', role: 'Delegate' },
   ];
 
   const handleProfilePicClick = () => {
