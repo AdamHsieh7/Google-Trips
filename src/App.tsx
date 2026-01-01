@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Home, 
   PlusCircle, 
@@ -263,8 +263,38 @@ export default function App() {
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [profilePic, setProfilePic] = useState('https://picsum.photos/seed/ghibli-tuxedo-cat/100/100');
+  
+  // Initialize profile picture from localStorage or default
+  const [profilePic, setProfilePic] = useState(() => {
+    const saved = localStorage.getItem('google_trips_profile_pic');
+    return saved || 'https://picsum.photos/seed/ghibli-tuxedo-cat/100/100';
+  });
+
+  // Initialize settings from localStorage or default
+  const [shareTrips, setShareTrips] = useState(() => {
+    const saved = localStorage.getItem('google_trips_share_trips');
+    return saved === null ? true : saved === 'true';
+  });
+  const [saveToCalendar, setSaveToCalendar] = useState(() => {
+    const saved = localStorage.getItem('google_trips_save_to_calendar');
+    return saved === null ? true : saved === 'true';
+  });
+
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Save profile picture to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('google_trips_profile_pic', profilePic);
+  }, [profilePic]);
+
+  // Save settings to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('google_trips_share_trips', String(shareTrips));
+  }, [shareTrips]);
+
+  useEffect(() => {
+    localStorage.setItem('google_trips_save_to_calendar', String(saveToCalendar));
+  }, [saveToCalendar]);
 
   const MOCK_DELEGATES = [
     { name: 'Zhang Wei', email: 'zhang.w@google.com', role: 'Travel Coordinator' },
@@ -864,7 +894,8 @@ export default function App() {
                       </div>
                       <input 
                         type="checkbox" 
-                        defaultChecked 
+                        checked={shareTrips}
+                        onChange={(e) => setShareTrips(e.target.checked)}
                         className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1 cursor-pointer"
                       />
                     </div>
@@ -880,7 +911,8 @@ export default function App() {
                         </div>
                         <input 
                           type="checkbox" 
-                          defaultChecked 
+                          checked={saveToCalendar}
+                          onChange={(e) => setSaveToCalendar(e.target.checked)}
                           className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1 cursor-pointer"
                         />
                       </div>
