@@ -262,7 +262,8 @@ export default function App() {
   const [isDelegatesModalOpen, setIsDelegatesModalOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
-  const [profilePic, setProfilePic] = useState('https://picsum.photos/seed/tuxedo-cat-green-eyes-art/100/100');
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [profilePic, setProfilePic] = useState('https://picsum.photos/seed/ghibli-tuxedo-cat/100/100');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const MOCK_DELEGATES = [
@@ -298,6 +299,8 @@ export default function App() {
       setIsHelpModalOpen(true);
     } else if (tab === 'Privacy') {
       setIsPrivacyModalOpen(true);
+    } else if (tab === 'Settings') {
+      setIsSettingsModalOpen(true);
     } else {
       setActiveTab(tab);
     }
@@ -812,6 +815,89 @@ export default function App() {
                       </div>
                     </div>
                   </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+        {/* Settings Modal */}
+        <AnimatePresence>
+          {isSettingsModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsSettingsModalOpen(false)}
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              />
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden"
+              >
+                {/* Header */}
+                <div className="px-6 py-4 border-b border-gray-100">
+                  <h3 className="text-2xl font-normal text-gray-800">Settings</h3>
+                </div>
+
+                <div className="p-6 space-y-6">
+                  <div className="space-y-4">
+                    <h4 className="text-base font-bold text-gray-900">Travel data settings</h4>
+                    
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      In order to meet Google compliance policies, your travel data will be shared with Google's systems and third party systems which have gone through the appropriate legal, privacy and security reviews of Alphabet.
+                    </p>
+
+                    {/* Option 1 */}
+                    <div className="flex items-start justify-between gap-4 pt-2">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-900 mb-1">Share your trip entries with systems at Google</p>
+                        <p className="text-xs text-gray-400 leading-relaxed">
+                          Share locations (e.g. US-NYC or Houston) and travel dates of your trip entries with Google's systems such as Teams and REWS. This will allow other Googlers to adapt to your travel plans and will enable smarter decisions. We will only share trips that you have created, i.e. that show up in <a href="#" className="text-blue-600 underline">My trip entries</a>.
+                        </p>
+                      </div>
+                      <input 
+                        type="checkbox" 
+                        defaultChecked 
+                        className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1 cursor-pointer"
+                      />
+                    </div>
+
+                    <div className="border-t border-gray-100 pt-4">
+                      {/* Option 2 */}
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-gray-900 mb-1">Save entries in Google Calendar</p>
+                          <p className="text-xs text-gray-400 leading-relaxed">
+                            Auto-save trip entries in Google Calendar (e.g. Working from San Francisco, CA) to allow other Googlers to adapt to your travel plans.
+                          </p>
+                        </div>
+                        <input 
+                          type="checkbox" 
+                          defaultChecked 
+                          className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1 cursor-pointer"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer Buttons */}
+                <div className="p-4 bg-gray-50 flex justify-end gap-3">
+                  <button 
+                    onClick={() => setIsSettingsModalOpen(false)}
+                    className="px-8 py-2 bg-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-400 transition-all active:scale-95 uppercase tracking-wider text-xs"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    onClick={() => setIsSettingsModalOpen(false)}
+                    className="px-8 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-95 uppercase tracking-wider text-xs"
+                  >
+                    Save
+                  </button>
                 </div>
               </motion.div>
             </div>
