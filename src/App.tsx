@@ -262,7 +262,7 @@ export default function App() {
   const [isDelegatesModalOpen, setIsDelegatesModalOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
-  const [profilePic, setProfilePic] = useState('https://picsum.photos/seed/tuxedo-cat-portrait/100/100');
+  const [profilePic, setProfilePic] = useState('https://picsum.photos/seed/tuxedo-cat-green-eyes-art/100/100');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const MOCK_DELEGATES = [
