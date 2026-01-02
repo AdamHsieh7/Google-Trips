@@ -199,7 +199,15 @@ const MAJOR_CITIES = [
   "Rome, Italy", "Amsterdam, Netherlands", "Vienna, Austria", "Prague, Czech Republic"
 ];
 
-const CitySearch = ({ placeholder, label }: { placeholder: string, label: string }) => {
+const CitySearch = ({ 
+  placeholder, 
+  label, 
+  onSelect 
+}: { 
+  placeholder: string, 
+  label: string, 
+  onSelect: (city: string) => void 
+}) => {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -248,6 +256,7 @@ const CitySearch = ({ placeholder, label }: { placeholder: string, label: string
                 onClick={() => {
                   setQuery(city);
                   setIsOpen(false);
+                  onSelect(city);
                 }}
                 className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors border-b border-gray-50 last:border-0"
               >
@@ -261,41 +270,100 @@ const CitySearch = ({ placeholder, label }: { placeholder: string, label: string
   );
 };
 
-const HomeView = () => (
-  <div className="w-full max-w-4xl space-y-6 pb-12">
-    {/* Get Caps Section */}
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
-    >
-      <div className="p-8">
-        <h2 className="text-2xl font-normal text-gray-800 mb-8">Get caps</h2>
-        
-        <div className="flex items-center gap-6 mb-8">
-          <div className="flex-1">
-            <label className="block text-xs text-gray-400 mb-1">Origin</label>
-            <input 
-              type="text" 
-              defaultValue="Taipei" 
-              className="w-full border-b border-gray-300 py-1 focus:border-blue-500 outline-none text-gray-700"
-            />
-          </div>
-          <div className="text-gray-400 pt-4">
-            <ChevronRight size={20} className="rotate-0" />
-          </div>
+const HomeView = () => {
+  const [estimatedCap, setEstimatedCap] = useState<string | null>(null);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
+
+  const calculateCap = (city: string) => {
+    // Simple logic to estimate flight price from Taipei
+    // Base price + some variation based on city name length/characters for consistency
+    let baseFlightPrice = 12000; // Default base
+    
+    if (city.includes("USA") || city.includes("Canada") || city.includes("Brazil") || city.includes("Mexico") || city.includes("Argentina") || city.includes("Chile")) {
+      baseFlightPrice = 45000;
+    } else if (city.includes("UK") || city.includes("France") || city.includes("Germany") || city.includes("Italy") || city.includes("Netherlands") || city.includes("Spain") || city.includes("Russia")) {
+      baseFlightPrice = 38000;
+    } else if (city.includes("Japan") || city.includes("South Korea") || city.includes("China") || city.includes("Hong Kong") || city.includes("Vietnam") || city.includes("Thailand") || city.includes("Philippines")) {
+      baseFlightPrice = 12000;
+    } else if (city.includes("Australia")) {
+      baseFlightPrice = 28000;
+    } else if (city.includes("India") || city.includes("Pakistan") || city.includes("Bangladesh")) {
+      baseFlightPrice = 22000;
+    } else if (city.includes("Africa") || city.includes("Nigeria") || city.includes("Egypt") || city.includes("Sudan") || city.includes("Angola")) {
+      baseFlightPrice = 55000;
+    }
+
+    // Add some "uniqueness" based on city name
+    const hash = city.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const variation = (hash % 5000);
+    const finalFlightPrice = baseFlightPrice + variation;
+    const totalCap = finalFlightPrice * 5;
+
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'TWD', maximumFractionDigits: 0 }).format(totalCap).replace('TWD', 'NT$');
+  };
+
+  const handleCitySelect = (city: string) => {
+    setSelectedCity(city);
+    setEstimatedCap(calculateCap(city));
+  };
+
+  return (
+    <div className="w-full max-w-4xl space-y-6 pb-12">
+      {/* Get Caps Section */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+      >
+        <div className="p-8">
+          <h2 className="text-2xl font-normal text-gray-800 mb-8">Get caps</h2>
           
-          <CitySearch label="Destination" placeholder="Destination" />
+          <div className="flex items-center gap-6 mb-8">
+            <div className="flex-1">
+              <label className="block text-xs text-gray-400 mb-1">Origin</label>
+              <input 
+                type="text" 
+                defaultValue="Taipei" 
+                className="w-full border-b border-gray-300 py-1 focus:border-blue-500 outline-none text-gray-700"
+              />
+            </div>
+            <div className="text-gray-400 pt-4">
+              <ChevronRight size={20} className="rotate-0" />
+            </div>
+            
+            <CitySearch 
+              label="Destination" 
+              placeholder="Destination" 
+              onSelect={handleCitySelect}
+            />
 
-          <div className="flex items-center gap-2 pt-4">
-            <input type="checkbox" defaultChecked className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-            <span className="text-sm text-gray-600">Back to Taipei</span>
+            <div className="flex items-center gap-2 pt-4">
+              <input type="checkbox" defaultChecked className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+              <span className="text-sm text-gray-600">Back to Taipei</span>
+            </div>
           </div>
-        </div>
 
-        <button className="text-blue-600 text-xs font-bold tracking-wider uppercase hover:underline">
-          ADVANCED SEARCH
-        </button>
+          <AnimatePresence>
+            {estimatedCap && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-8 p-4 bg-blue-50 rounded-lg border border-blue-100 flex items-center justify-between"
+              >
+                <div>
+                  <p className="text-xs text-blue-600 font-bold uppercase tracking-wider mb-1">Estimated Trip Cap</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-blue-700">{estimatedCap}</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <button className="text-blue-600 text-xs font-bold tracking-wider uppercase hover:underline">
+            ADVANCED SEARCH
+          </button>
 
         {/* Yellow Info Box */}
         <div className="mt-8 bg-yellow-50 border border-yellow-100 rounded p-6 flex gap-4">
@@ -337,7 +405,8 @@ const HomeView = () => (
       </div>
     </motion.div>
   </div>
-);
+  );
+};
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('Home');
