@@ -173,6 +173,94 @@ const TripCard = ({ trip }: { trip: Trip }) => (
   </motion.div>
 );
 
+const MAJOR_CITIES = [
+  "Tokyo, Japan", "Delhi, India", "Shanghai, China", "Sao Paulo, Brazil", "Mexico City, Mexico", 
+  "Cairo, Egypt", "Mumbai, India", "Beijing, China", "Dhaka, Bangladesh", "Osaka, Japan", 
+  "New York City, USA", "Karachi, Pakistan", "Buenos Aires, Argentina", "Chongqing, China", 
+  "Istanbul, Turkey", "Kolkata, India", "Manila, Philippines", "Lagos, Nigeria", 
+  "Rio de Janeiro, Brazil", "Tianjin, China", "Kinshasa, DR Congo", "Guangzhou, China", 
+  "Los Angeles, USA", "Moscow, Russia", "Shenzhen, China", "Lahore, Pakistan", 
+  "Bangalore, India", "Paris, France", "Bogota, Colombia", "Jakarta, Indonesia", 
+  "Chennai, India", "Lima, Peru", "Bangkok, Thailand", "Seoul, South Korea", 
+  "Nagoya, Japan", "Hyderabad, India", "London, UK", "Tehran, Iran", "Chicago, USA", 
+  "Chengdu, China", "Nanjing, China", "Wuhan, China", "Ho Chi Minh City, Vietnam", 
+  "Luanda, Angola", "Ahmedabad, India", "Kuala Lumpur, Malaysia", "Xi'an, China", 
+  "Hong Kong, China", "Dongguan, China", "Hangzhou, China", "Foshan, China", 
+  "Shenyang, China", "Riyadh, Saudi Arabia", "Baghdad, Iraq", "Santiago, Chile", 
+  "Surat, India", "Madrid, Spain", "Suzhou, China", "Pune, India", "Harbin, China", 
+  "Houston, USA", "Dallas, USA", "Toronto, Canada", "Dar es Salaam, Tanzania", 
+  "Miami, USA", "Belo Horizonte, Brazil", "Singapore, Singapore", "Philadelphia, USA", 
+  "Atlanta, USA", "Fukuoka, Japan", "Khartoum, Sudan", "Barcelona, Spain", 
+  "Johannesburg, South Africa", "Saint Petersburg, Russia", "Qingdao, China", 
+  "Dalian, China", "Washington D.C., USA", "Yangon, Myanmar", "Alexandria, Egypt", 
+  "Jinan, China", "Guadalajara, Mexico", "Ankara, Turkey", "Zhengzhou, China", 
+  "Hefei, China", "Melbourne, Australia", "Sydney, Australia", "Monterrey, Mexico", 
+  "Yokohama, Japan", "Nanjing, China", "Taipei, Taiwan", "Berlin, Germany",
+  "Rome, Italy", "Amsterdam, Netherlands", "Vienna, Austria", "Prague, Czech Republic"
+];
+
+const CitySearch = ({ placeholder, label }: { placeholder: string, label: string }) => {
+  const [query, setQuery] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const filteredCities = query === '' 
+    ? [] 
+    : MAJOR_CITIES.filter(city => 
+        city.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 100);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div className="flex-1 relative" ref={dropdownRef}>
+      <label className="block text-xs text-gray-400 mb-1">{label}</label>
+      <input 
+        type="text" 
+        value={query}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          setIsOpen(true);
+        }}
+        onFocus={() => setIsOpen(true)}
+        placeholder={placeholder} 
+        className="w-full border-b border-gray-300 py-1 focus:border-blue-500 outline-none text-gray-700 bg-transparent"
+      />
+      <AnimatePresence>
+        {isOpen && filteredCities.length > 0 && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute z-50 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200"
+          >
+            {filteredCities.map((city, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setQuery(city);
+                  setIsOpen(false);
+                }}
+                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors border-b border-gray-50 last:border-0"
+              >
+                {city}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const HomeView = () => (
   <div className="w-full max-w-4xl space-y-6 pb-12">
     {/* Get Caps Section */}
@@ -196,14 +284,9 @@ const HomeView = () => (
           <div className="text-gray-400 pt-4">
             <ChevronRight size={20} className="rotate-0" />
           </div>
-          <div className="flex-1">
-            <label className="block text-xs text-gray-400 mb-1">Destination</label>
-            <input 
-              type="text" 
-              placeholder="Destination" 
-              className="w-full border-b border-gray-300 py-1 focus:border-blue-500 outline-none text-gray-700"
-            />
-          </div>
+          
+          <CitySearch label="Destination" placeholder="Destination" />
+
           <div className="flex items-center gap-2 pt-4">
             <input type="checkbox" defaultChecked className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
             <span className="text-sm text-gray-600">Back to Taipei</span>
